@@ -18,7 +18,7 @@ def train(args, model, train_loader, optimizer, criterion, epoch):
         output.clamp_(min=1e-7, max=1 - 1e-7)
         a_prob.clamp_(min=1e-7, max=1 - 1e-7)
         v_prob.clamp_(min=1e-7, max=1 - 1e-7)
-
+ 
         # label smoothing
         a = 1.0
         v = 0.9 

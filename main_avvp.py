@@ -78,7 +78,7 @@ def eval(model, val_loader, set):
             GT_a = np.zeros((25, 10))
             GT_v =np.zeros((25, 10))
 
-            df_vid_a = df_a.loc[df_a['filename'] == df.loc[batch_idx, :][0]]
+            df_vid_a = df_a.loc[df_a['filename'] == df.loc[batch_idx, :].iloc[0]]
             filenames = df_vid_a["filename"]
             events = df_vid_a["event_labels"]
             onsets = df_vid_a["onset"]
@@ -94,7 +94,7 @@ def eval(model, val_loader, set):
                     GT_a[idx, x1:x2] = 1
 
             # extract visual GT labels
-            df_vid_v = df_v.loc[df_v['filename'] == df.loc[batch_idx, :][0]]
+            df_vid_v = df_v.loc[df_v['filename'] == df.loc[batch_idx, :].iloc[0]]
             filenames = df_vid_v["filename"]
             events = df_vid_v["event_labels"]
             onsets = df_vid_v["onset"]
@@ -178,7 +178,7 @@ def main():
     parser.add_argument(
         "--model", type=str, default='MMIL_Net', help="with model to use")
     parser.add_argument(
-        "--mode", type=str, default='train', help="with mode to use")
+        "--mode", type=str, default='test', help="with mode to use")
     parser.add_argument('--seed', type=int, default=1, metavar='S',
                         help='random seed (default: 1)')
     parser.add_argument('--log-interval', type=int, default=50, metavar='N',
@@ -214,7 +214,7 @@ def main():
         best_F = 0
         for epoch in range(1, args.epochs + 1):
             train(args, model, train_loader, optimizer, criterion, epoch=epoch)
-            scheduler.step(epoch)
+            scheduler.step()
             F = eval(model, val_loader, args.label_val)
             if F >= best_F:
                 best_F = F
@@ -230,7 +230,7 @@ def main():
         test_dataset = LLP_dataset(label=args.label_test, audio_dir=args.audio_dir, video_dir=args.video_dir,  st_dir=args.st_dir, transform = transforms.Compose([
                                                ToTensor()]))
         test_loader = DataLoader(test_dataset, batch_size=1, shuffle=False, num_workers=1, pin_memory=True)
-        model.load_state_dict(torch.load(args.model_save_dir + args.checkpoint + ".pt"))
+        model.load_state_dict(torch.load(args.model_save_dir + args.checkpoint + '_0826'+ ".pt"))
         eval(model, test_loader, args.label_test)
 if __name__ == '__main__':
     main()

@@ -31,3 +31,5 @@ Thumbs.db
 *.pkl
 *.ckpt
 *.pyc 
+feats
+models
